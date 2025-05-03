@@ -1,35 +1,36 @@
+
 const COHORT_CODE = "2412-FTB-MT-WEB-PT";
 
-
-function getObjectscallb (){
-
-    fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT_CODE}/events`).then((response) => response.json()).then((data) => {
-
-
-        console.log(data);
+function getObjectscallb() {
+  fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT_CODE}/events`)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("All Events:", data.data);
     })
-  
-   
+    .catch((err) => console.error("Error fetching events:", err));
 }
-    getObjectscallb();
+
+getObjectscallb();
+
 
     //Got lists of all the party events data using callback - not async await 
 
 
-    function addObjectscallb (eventdata){
-
-        fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT_CODE}/events`,{
-            method: "POST" ,
-            headers: {
-                    'Content-Type': 'application/json' ,
-            body: JSON.stringify(eventdata) 
-        }.then((response) => response.json()).then((data) => {
+    function addObjectscallb(eventdata) {
+      fetch(`https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT_CODE}/events`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventdata)
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Event added:", data);
+        })
+        .catch((err) => console.error("Error adding event:", err));
+    }
     
-    
-            console.log(data);
-        }), }
-    )
-};
 
 // addObjectscallb(eventdata ,
 //     {
@@ -44,21 +45,22 @@ function getObjectscallb (){
  //Created a fetch to enable new Post into the API
 
 
- const url = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT_CODE}/events`;
- const options = {
-    method: 'DELETE'
-  };
+ function deleteEventById(id) {
+  const url = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT_CODE}/events/${id}`;
 
-  fetch(url, options)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-})
-.then(data => {
-  console.log('Data deleted successfully:', data);
-})
-.catch(error => {
-  console.error('Error deleting data:', error);
-});
+  fetch(url, { method: 'DELETE' })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('Event deleted successfully:', data);
+    })
+    .catch(error => {
+      console.error('Error deleting event:', error);
+    });
+}
+
+
