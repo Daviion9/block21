@@ -1,13 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script.js" defer ></script>
-    <title> Party Planner </title>
+  <meta charset="UTF-8" />
+  <title>Event Manager</title>
+  <style>
+    body { font-family: sans-serif; }
+    .event { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+    .event button { margin-top: 5px; }
+  </style>
 </head>
 <body>
-    <h1 > EVENTS </h1>
+  <h1>Event Manager</h1>
 
+  <h2>Add New Event</h2>
+  <form id="event-form">
+    <input type="text" name="name" placeholder="Event Name" required />
+    <input type="text" name="description" placeholder="Description" required />
+    <input type="datetime-local" name="date" required />
+    <input type="text" name="location" placeholder="Location" required />
+    <button type="submit">Add Event</button>
+  </form>
+
+  <h2>Upcoming Events</h2>
+  <div id="event-list"></div>
+
+  <script>
+    const COHORT_CODE = "2412-FTB-MT-WEB-PT";
+    const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT_CODE}/events`;
+
+    const eventList = document.getElementById("event-list");
+    const form = document.getElementById("event-form");
+
+
+      // Attach delete handlers
+      document.querySelectorAll(".event button").forEach(button => {
+        button.addEventListener("click", async () => {
+          const id = button.getAttribute("data-id");
+          await deleteEvent(id);
+        });
+      });
+    
+
+    // Add new event
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      const newEvent = {
+        name: formData.get("name"),
+        description: formData.get("description"),
+        date: new Date(formData.get("date")).toISOString(),
+        location: formData.get("location")
+      };
+
+      await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newEvent)
+      });
+
+      form.reset();
+      fetchEvents();
+    });
+
+    // Delete event
+    async function deleteEvent(id) {
+      await fetch(`${API_URL}/${id}`, {
+        method: "DELETE"
+      });
+      fetchEvents();
+    }
+
+    fetchEvents();
+  </script>
 </body>
 </html>
